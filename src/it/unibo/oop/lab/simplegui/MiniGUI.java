@@ -10,9 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * This class is a simple application that writes a random number on a file.
@@ -33,9 +35,14 @@ public class MiniGUI {
      */
     public MiniGUI() {
         final JPanel canvas = new JPanel();
+        final JPanel canvas2 = new JPanel();
         canvas.setLayout(new BorderLayout());
+        canvas2.setLayout(new BoxLayout(canvas2, BoxLayout.X_AXIS));
+        final JTextField result = new JTextField("Result");
+        canvas.add(result, BorderLayout.NORTH);
         final JButton write = new JButton("Print a random number on standard output");
-        canvas.add(write, BorderLayout.CENTER);
+        canvas2.add(write);
+        canvas.add(canvas2);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
@@ -44,9 +51,11 @@ public class MiniGUI {
         write.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(rng.nextInt());
+                final int rnd = rng.nextInt();
+                System.out.println(rnd);
+                result.setText(Integer.toString(rnd));
             }
-        });
+        });    
     }
 
     private void display() {
@@ -67,7 +76,11 @@ public class MiniGUI {
          * flag makes the OS window manager take care of the default positioning
          * on screen. Results may vary, but it is generally the best choice.
          */
-        frame.setLocationByPlatform(true);
+        frame.setLocationByPlatform(true);  
+        /*
+         * Resize the frame to the minimum size prior to dislaying
+         */
+        frame.pack();
         /*
          * OK, ready to pull the frame onscreen
          */
@@ -80,5 +93,4 @@ public class MiniGUI {
     public static void main(final String... args) {
        new MiniGUI().display();
     }
-
 }
