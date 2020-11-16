@@ -55,7 +55,7 @@ public class MiniGUI {
                 System.out.println(rnd);
                 result.setText(Integer.toString(rnd));
             }
-        });    
+        });
     }
 
     private void display() {
@@ -76,9 +76,9 @@ public class MiniGUI {
          * flag makes the OS window manager take care of the default positioning
          * on screen. Results may vary, but it is generally the best choice.
          */
-        frame.setLocationByPlatform(true);  
+        frame.setLocationByPlatform(true);
         /*
-         * Resize the frame to the minimum size prior to dislaying
+         * Resize the frame to the minimum size prior to displaying
          */
         frame.pack();
         /*

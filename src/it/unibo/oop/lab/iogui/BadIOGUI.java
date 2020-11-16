@@ -72,12 +72,12 @@ public class BadIOGUI {
                 }
             }
         });
-        
+
         read.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 try (
-                  final DataInputStream dstream = new DataInputStream(
+                  DataInputStream dstream = new DataInputStream(
                     new BufferedInputStream(
                       new FileInputStream(PATH)));
                 ) {
