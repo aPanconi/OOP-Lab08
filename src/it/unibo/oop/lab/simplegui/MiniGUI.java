@@ -42,7 +42,7 @@ public class MiniGUI {
         canvas.add(result, BorderLayout.NORTH);
         final JButton write = new JButton("Print a random number on standard output");
         canvas2.add(write);
-        canvas.add(canvas2);
+        canvas.add(canvas2, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
