@@ -1,9 +1,15 @@
 package it.unibo.oop.lab.mvc;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
-
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  * A very simple program using a graphical interface.
@@ -36,8 +42,39 @@ public final class SimpleGUI {
 
     /**
      * builds a new {@link SimpleGUI}.
+     * @param control
      */
-    public SimpleGUI() {
+    public SimpleGUI(final Controller control) {
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        final JTextField string = new JTextField();
+        final JTextArea history = new JTextArea();
+
+        final JButton print = new JButton("Print");
+        print.addActionListener(e -> {
+            control.setNextString(string.getText());
+            control.printCurrentString();
+        });
+
+        final JButton showHistory = new JButton("Show history");
+        showHistory.addActionListener(e -> {
+            final List<String> l = control.getHistory();
+            history.append("\n");
+            for (String s : l) {
+                history.append(s + "\n");
+            }
+        });
+
+        mainPanel.add(string, BorderLayout.NORTH);
+        mainPanel.add(history, BorderLayout.CENTER);
+        final JPanel subPanel = new JPanel();
+        subPanel.setLayout(new GridLayout());
+        subPanel.add(print);
+        subPanel.add(showHistory);
+        mainPanel.add(subPanel, BorderLayout.SOUTH);
+
+        frame.setContentPane(mainPanel);
 
         /*
          * Make the frame half the resolution of the screen. This very method is
@@ -62,4 +99,12 @@ public final class SimpleGUI {
         frame.setLocationByPlatform(true);
     }
 
+    void display() {
+        frame.setVisible(true);
+    }
+
+    public static void main(final String... args) {
+        SimpleGUI gui = new SimpleGUI(new ControllerImpl());
+        gui.display();
+    }
 }
