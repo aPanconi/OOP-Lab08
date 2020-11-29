@@ -11,7 +11,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     private static final int MAX = 100;
     private static final int ATTEMPTS = 10;
     private DrawNumber model;
-    private final DrawNumberView view;
+    private DrawNumberView view;
 
     /**
      * @throws IOException 
@@ -21,14 +21,20 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
         try {
             this.model = new DrawNumberImpl(ConfigReader.getParam(
                     Param.MIN), ConfigReader.getParam(Param.MAX), ConfigReader.getParam(Param.ATTEMPTS));
-            System.out.println("MIN: " + ConfigReader.getParam(Param.MIN) + " MAX: " + ConfigReader.getParam(Param.MAX) + " ATTEMPTS: " + ConfigReader.getParam(Param.ATTEMPTS));
+            this.view = new DrawNumberViewImpl();
+            this.view.setObserver(this);
+            this.view.start();
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage() + "\nHarcoded params will be loaded...");
+            this.view = new DrawNumberViewImpl();
+            displayError(ex.getMessage() + "\nHarcoded params will be loaded...");
             this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+            this.view.setObserver(this);
+            this.view.start();
         }
-        this.view = new DrawNumberViewImpl();
-        this.view.setObserver(this);
-        this.view.start();
+    }
+
+    public void displayError(final String msg) {
+        view.displayError(msg);
     }
 
     @Override
