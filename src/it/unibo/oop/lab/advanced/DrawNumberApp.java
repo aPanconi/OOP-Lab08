@@ -1,6 +1,9 @@
 package it.unibo.oop.lab.advanced;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import it.unibo.oop.lab.advanced.ConfigReader.Param;
 
 /**
@@ -11,41 +14,48 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     private static final int MAX = 100;
     private static final int ATTEMPTS = 10;
     private DrawNumber model;
-    private DrawNumberView view;
+    private final List<DrawNumberView> views;
 
     /**
-     * @throws IOException 
-     * 
+     * @throws IOException
+     * @param views 
      */
-    public DrawNumberApp() {
+    public DrawNumberApp(final DrawNumberView... views) {
+        this.views = Arrays.asList(Arrays.copyOf(views, views.length));
+        for (final DrawNumberView view: views) {
+            view.setObserver(this);
+            view.start();
+        }
         try {
             this.model = new DrawNumberImpl(ConfigReader.getParam(
                     Param.MIN), ConfigReader.getParam(Param.MAX), ConfigReader.getParam(Param.ATTEMPTS));
-            this.view = new DrawNumberViewImpl();
-            this.view.setObserver(this);
-            this.view.start();
         } catch (Exception ex) {
-            this.view = new DrawNumberViewImpl();
             displayError(ex.getMessage() + "\nHarcoded params will be loaded...");
             this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
-            this.view.setObserver(this);
-            this.view.start();
         }
     }
 
     public void displayError(final String msg) {
-        view.displayError(msg);
+        for (final DrawNumberView view: views) {
+            view.displayError(msg);
+        }
     }
 
     @Override
     public void newAttempt(final int n) {
         try {
             final DrawResult result = model.attempt(n);
-            this.view.result(result);
+            for (final DrawNumberView view: views) {
+                view.result(result);
+            }
         } catch (IllegalArgumentException e) {
-            this.view.numberIncorrect();
+            for (final DrawNumberView view: views) {
+                view.numberIncorrect();
+            }
         } catch (AttemptsLimitReachedException e) {
-            view.limitsReached();
+            for (final DrawNumberView view: views) {
+                view.limitsReached();
+            }
         }
     }
 
@@ -65,7 +75,7 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      * @throws IOException 
      */
     public static void main(final String... args) throws IOException {
-        new DrawNumberApp();
+        new DrawNumberApp(new DrawNumberViewImpl(), new PrintLogView(System.out), new PrintLogView("output.log"));
     }
 
 }
