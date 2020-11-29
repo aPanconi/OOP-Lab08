@@ -9,45 +9,41 @@ import java.util.StringTokenizer;
 public final class ConfigReader {
 
     private static final String CONFIG_FILE = "config.yml";
-    private static final int NUM_TOKEN = 2;
+    private static final int NUM_LINES = 3;
 
     enum Param {
-        MIN(0),
-        MAX(1),
-        ATTEMPTS(2);
+        MIN("minimum"),
+        MAX("maximum"),
+        ATTEMPTS("attempts");
 
-        private final int index;
+        private final String token;
 
-        Param(final int index) {
-            this.index = index;
+        Param(final String token) {
+            this.token = token;
         }
 
-        public int getIndex() {
-            return this.index;
+        public String getToken() {
+            return this.token;
         }
     }
 
     private ConfigReader() {
     }
 
-    private static String readLine(final int index) throws IOException {
-        final InputStream in = ClassLoader.getSystemResourceAsStream(CONFIG_FILE);
-        final BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String line = null;
-        for (int i = 0; i <= index; i++) {
-            line = br.readLine();
+    public static int getParam(final Param param) throws CorruptedConfigurationException {
+        try {
+            final InputStream in = ClassLoader.getSystemResourceAsStream(CONFIG_FILE);
+            final BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            for (int i = 0; i < NUM_LINES; i++) {
+                final StringTokenizer st = new StringTokenizer(br.readLine(), ":");
+                if (st.nextToken().equals(param.getToken())) {
+                    br.close();
+                    return Integer.parseInt(st.nextToken().trim());
+                }
+            }
+            throw new CorruptedConfigurationException("Configuration file is corrupted!");
+        } catch (IOException ex) {
+            throw new CorruptedConfigurationException("Configuration file not found!");
         }
-        in.close();
-        return line;
-    }
-
-    public static int getParam(final Param p) throws IOException {
-        final String line = readLine(p.getIndex());
-        final StringTokenizer st = new StringTokenizer(line);
-        String param = null;
-        for (int i = 0; i < NUM_TOKEN; i++) {
-            param = st.nextToken();
-        }
-        return Integer.parseInt(param);
     }
 }

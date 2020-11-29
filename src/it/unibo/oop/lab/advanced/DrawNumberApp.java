@@ -7,19 +7,25 @@ import it.unibo.oop.lab.advanced.ConfigReader.Param;
  */
 public final class DrawNumberApp implements DrawNumberViewObserver {
 
-    //private static final int MIN = 0;
-    //private static final int MAX = 100;
-    //private static final int ATTEMPTS = 10;
-    private final DrawNumber model;
+    private static final int MIN = 0;
+    private static final int MAX = 100;
+    private static final int ATTEMPTS = 10;
+    private DrawNumber model;
     private final DrawNumberView view;
 
     /**
      * @throws IOException 
      * 
      */
-    public DrawNumberApp() throws IOException {
-        this.model = new DrawNumberImpl(ConfigReader.getParam(
-                Param.MIN), ConfigReader.getParam(Param.MAX), ConfigReader.getParam(Param.ATTEMPTS));
+    public DrawNumberApp() {
+        try {
+            this.model = new DrawNumberImpl(ConfigReader.getParam(
+                    Param.MIN), ConfigReader.getParam(Param.MAX), ConfigReader.getParam(Param.ATTEMPTS));
+            System.out.println("MIN: " + ConfigReader.getParam(Param.MIN) + " MAX: " + ConfigReader.getParam(Param.MAX) + " ATTEMPTS: " + ConfigReader.getParam(Param.ATTEMPTS));
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage() + "\nHarcoded params will be loaded...");
+            this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+        }
         this.view = new DrawNumberViewImpl();
         this.view.setObserver(this);
         this.view.start();
