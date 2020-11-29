@@ -1,20 +1,25 @@
 package it.unibo.oop.lab.advanced;
 
+import java.io.IOException;
+import it.unibo.oop.lab.advanced.ConfigReader.Param;
+
 /**
  */
 public final class DrawNumberApp implements DrawNumberViewObserver {
 
-    private static final int MIN = 0;
-    private static final int MAX = 100;
-    private static final int ATTEMPTS = 10;
+    //private static final int MIN = 0;
+    //private static final int MAX = 100;
+    //private static final int ATTEMPTS = 10;
     private final DrawNumber model;
     private final DrawNumberView view;
 
     /**
+     * @throws IOException 
      * 
      */
-    public DrawNumberApp() {
-        this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+    public DrawNumberApp() throws IOException {
+        this.model = new DrawNumberImpl(ConfigReader.getParam(
+                Param.MIN), ConfigReader.getParam(Param.MAX), ConfigReader.getParam(Param.ATTEMPTS));
         this.view = new DrawNumberViewImpl();
         this.view.setObserver(this);
         this.view.start();
@@ -45,8 +50,9 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
     /**
      * @param args
      *            ignored
+     * @throws IOException 
      */
-    public static void main(final String... args) {
+    public static void main(final String... args) throws IOException {
         new DrawNumberApp();
     }
 
