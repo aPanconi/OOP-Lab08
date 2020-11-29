@@ -41,6 +41,7 @@ public final class ConfigReader {
                     return Integer.parseInt(st.nextToken().trim());
                 }
             }
+            br.close();
             throw new CorruptedConfigurationException("Configuration file is corrupted!");
         } catch (IOException ex) {
             throw new CorruptedConfigurationException("Configuration file not found!");
